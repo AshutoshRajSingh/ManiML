@@ -24,16 +24,19 @@ class WBGradientDescentOptimizer(ABC):
         if y.shape != (m, 1):
             raise ValueError(f'y must be of shape [m, 1], got shape {y.shape} instead')
 
-    def compute_gradients(self, x, y, epoch):
+    def compute_gradients(self, x, y):
         raise NotImplementedError()
 
     def _apply_gradients(self, dw, db):
         self._weights -= dw * self._lr
         self._bias -= db * self._lr
 
-    def _perform_training_step(self, x, y, epoch):
-        dw, db = self.compute_gradients(x, y, epoch)
+    def _perform_training_step(self, x, y):
+        dw, db = self.compute_gradients(x, y)
         self._apply_gradients(dw, db)
+
+    def perform_training_step(self, x, y, epoch):
+        self._perform_training_step(x, y)
 
     def fit_remembering_weights(self, x, y, epochs=1000):
         self._validate_input_dims(x, y)
@@ -42,7 +45,7 @@ class WBGradientDescentOptimizer(ABC):
         weights, biases = list(), list()
 
         for epoch in range(epochs):
-            self._perform_training_step(x, y, epoch)
+            self.perform_training_step(x, y, epoch)
             weights.append(self._weights.ravel())
             biases.append(self._bias.ravel())
         

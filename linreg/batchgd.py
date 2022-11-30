@@ -4,7 +4,7 @@ from optimizer import WBGradientDescentOptimizer
 class BatchGradientDescentOptimizer(WBGradientDescentOptimizer):
     def __init__(self, lr) -> None:
         super().__init__(lr)
-    def compute_gradients(self, x, y, epoch):
+    def compute_gradients(self, x, y):
         m, _ = x.shape
 
         dw = 2 / m * np.sum((x.dot(self._weights) + self._bias - y) * x, axis=0)
