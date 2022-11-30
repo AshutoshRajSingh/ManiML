@@ -36,6 +36,10 @@ class WBGradientDescentOptimizer(ABC):
         self._apply_gradients(dw, db)
 
     def perform_training_step(self, x, y, epoch):
+        '''
+        Epoch available here primarily to implement a learning schedule,
+        just override this method and implement any lr manipulation
+        '''
         self._perform_training_step(x, y)
 
     def fit_remembering_weights(self, x, y, epochs=1000):
