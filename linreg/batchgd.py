@@ -28,9 +28,14 @@ class BatchGradientDescentOptimizer:
         
         if y.shape[-1] != 1 or len(y.shape) != 2:
             raise ValueError(f'y must be of shape [None, 1], got {y.shape} instead')
-            
+    
+    def _add_bias_term_to_batch(self, x):
+        _, n = x.shape
+        return np.c_[np.ones([n, 1]), x]
+
     def fit_remembering_weights(self, x, y, epochs=100):
         self._initialize_optimizer(x, y)
+        x = self._add_bias_term_to_batch(x)
 
         thetas = list()
 
