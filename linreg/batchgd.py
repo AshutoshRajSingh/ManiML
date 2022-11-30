@@ -2,7 +2,7 @@ import numpy as np
 from optimizer import WBGradientDescentOptimizer
 
 class BatchGradientDescentOptimizer(WBGradientDescentOptimizer):
-    def __init__(self, lr) -> None:
+    def __init__(self, lr=0.01) -> None:
         super().__init__(lr)
     def compute_gradients(self, x, y):
         m, _ = x.shape
