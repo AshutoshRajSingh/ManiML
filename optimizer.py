@@ -9,7 +9,7 @@ class WBGradientDescentOptimizer(ABC):
     def __init__(self, lr) -> None:
         self._lr = lr
         self._weights = np.empty([])
-        self._bias = np.empty([])
+        self._bias = np.random.rand(1)
     
     def _initialize_weight_dims(self, x):
         _, n = x.shape
