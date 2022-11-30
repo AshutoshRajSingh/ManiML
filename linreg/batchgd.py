@@ -22,7 +22,7 @@ class BatchGradientDescentOptimizer:
     def _initialize_optimizer(self, x, y):
         try:
             _, n = x.shape
-            self._initialize_theta_dims(n)
+            self._initialize_theta_dims(n + 1)
         except ValueError:
             raise ValueError('x must be 2-dimensional')
         
