@@ -1,5 +1,9 @@
 from manim import *
 import numpy as np
+
+import sys, os
+sys.path.append(os.curdir)
+
 from linreg.batchgd import BatchGradientDescentOptimizer
 
 def generate_dummy_linear_data(n=100, w=3, b=4):
@@ -25,7 +29,7 @@ class BatchGradientDescent(Scene):
         first_weight, first_bias = weights[0], biases[0]
         
         weight_matrix = DecimalMatrix(
-            [[first_weight]],
+            [first_weight],
             **DEFAULT_DECIMAL_MATRIX_CONFIG
         )
 
@@ -37,7 +41,7 @@ class BatchGradientDescent(Scene):
         weight_matrix_group = VGroup(weight_matrix, weight_matrix_label)
 
         bias_matrix = DecimalMatrix(
-            [[first_bias]],
+            [first_bias],
             **DEFAULT_DECIMAL_MATRIX_CONFIG
         )
 
@@ -53,4 +57,4 @@ class BatchGradientDescent(Scene):
             '10000'
         ).next_to(bias_matrix_group, RIGHT)
 
-        info_group = VGroup(weight_matrix_group, bias_matrix_group, epoch_info).to_edge(UP)
+        info_group = VGroup(weight_matrix_group, bias_matrix_group, epoch_info).center().to_edge(UP)
