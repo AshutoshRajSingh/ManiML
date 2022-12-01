@@ -1,30 +1,38 @@
 import numpy as np
 from abc import ABC
 
+
 class WBGradientDescentOptimizer(ABC):
     '''
     Base class for implementing algorithms that optimize any loss
     whose gradient is given as grad = f(xw + b)
     '''
+
     def __init__(self, lr) -> None:
         self._lr = lr
         self._weights = np.empty([])
         self._bias = np.random.rand(1)
-    
+
     def _initialize_weight_dims(self, x):
         _, n = x.shape
         self._weights = np.random.rand(n, 1)
-    
+
     def _validate_input_dims(self, x, y):
         if len(x.shape) != 2:
-            raise ValueError(f'x must be 2 dimensional, got shape {x.shape} instead')
+            raise ValueError(
+                f'x must be 2 dimensional, got shape {x.shape} instead')
 
         m, _ = x.shape
 
         if y.shape != (m, 1):
-            raise ValueError(f'y must be of shape [m, 1], got shape {y.shape} instead')
+            raise ValueError(
+                f'y must be of shape [m, 1], got shape {y.shape} instead')
 
     def compute_gradients(self, x, y):
+        '''
+        This method must be overridden and return a tuple of the form (dw, db)
+        where dw is the gradient wrt weights and db is gradient wrt bias
+        '''
         raise NotImplementedError()
 
     def _apply_gradients(self, dw, db):
@@ -52,5 +60,5 @@ class WBGradientDescentOptimizer(ABC):
             self.perform_training_step(x, y, epoch)
             weights.append(self._weights.ravel())
             biases.append(self._bias.ravel())
-        
+
         return weights, biases
