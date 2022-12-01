@@ -4,7 +4,7 @@ import numpy as np
 import sys, os
 sys.path.append(os.curdir)
 
-from linreg.batchgd import BatchGradientDescentOptimizer
+from optimizers.lro import BatchGradientDescentOptimizer
 
 def generate_dummy_linear_data(n=100, w=3, b=4):
     x = np.random.rand(n, 1)

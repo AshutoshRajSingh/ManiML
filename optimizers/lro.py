@@ -1,5 +1,5 @@
 import numpy as np
-from optimizer import WBGradientDescentOptimizer
+from .__baseoptimizer import WBGradientDescentOptimizer
 
 
 class BatchGradientDescentOptimizer(WBGradientDescentOptimizer):
