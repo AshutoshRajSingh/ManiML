@@ -28,12 +28,11 @@ class StochasticGradientDescentOptimizer(BatchGradientDescentOptimizer):
     def perform_training_step(self, x, y, epoch):
         m, _ = x.shape
 
-        for _ in range(m):
-            random_idx = np.random.randint(0, m)
+        random_idx = np.random.randint(0, m)
 
-            x_random = x[random_idx][np.newaxis, :]
-            y_random = y[random_idx][np.newaxis, :]
+        x_random = x[random_idx][np.newaxis, :]
+        y_random = y[random_idx][np.newaxis, :]
 
-            dw, db = self.compute_gradients(x_random, y_random)
+        dw, db = self.compute_gradients(x_random, y_random)
 
-            self._apply_gradients(dw, db)
+        self._apply_gradients(dw, db)
