@@ -5,6 +5,9 @@ from .__baseoptimizer import WBGradientDescentOptimizer
 class BatchGradientDescentOptimizer(WBGradientDescentOptimizer):
     def __init__(self, lr=0.01) -> None:
         super().__init__(lr)
+    
+    def compute_loss(self, x, y):
+        return np.mean((x.dot(self._weights) + self._bias - y) ** 2)
 
     def compute_gradients(self, x, y):
         m, _ = x.shape
