@@ -35,6 +35,12 @@ class WBGradientDescentOptimizer(ABC):
         where dw is the gradient wrt weights and db is gradient wrt bias
         '''
         raise NotImplementedError()
+    
+    def compute_loss(self, x, y):
+        '''
+        This method should be overridden and return a single loss value if needed
+        '''
+        raise NotImplementedError()
 
     def _apply_gradients(self, dw, db):
         self._weights -= dw * self._lr
