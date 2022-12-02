@@ -1,5 +1,6 @@
 import numpy as np
 from abc import ABC
+from copy import deepcopy
 
 
 class WBGradientDescentOptimizer(ABC):
@@ -58,7 +59,7 @@ class WBGradientDescentOptimizer(ABC):
 
         for epoch in range(epochs):
             self.perform_training_step(x, y, epoch)
-            weights.append(self._weights.ravel())
-            biases.append(self._bias.ravel())
+            weights.append(deepcopy(self._weights).ravel())
+            biases.append(deepcopy(self._bias).ravel())
 
         return weights, biases
