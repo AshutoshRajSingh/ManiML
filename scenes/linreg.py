@@ -1,4 +1,3 @@
-from optimizers.lro import BatchGradientDescentOptimizer
 from manim import *
 import numpy as np
 
@@ -6,6 +5,7 @@ import sys
 import os
 sys.path.append(os.curdir)
 
+from optimizers.lro import BatchGradientDescentOptimizer
 
 def generate_dummy_linear_data(n=100, w=3, b=4):
     x = np.random.rand(n, 1)
@@ -20,6 +20,19 @@ DEFAULT_DECIMAL_MATRIX_CONFIG = {
         'num_decimal_places': 3
     }
 }
+
+DEFAULT_AX_CONFIG = {
+    'include_numbers': True
+}
+
+AX_DEFAULT_SCALE_FACTOR = 0.5
+MAX_EPOCH = 1000
+LR_DEFAULT = 0.01
+AX_SIDE = 10
+DATA_X_RANGE_DEFAULT = [-1, 1, 0.2]
+DATA_Y_RANGE_DEFAULT = [-5, 5, 1]
+LOSS_X_RANGE_DEFAULT = [0, MAX_EPOCH, MAX_EPOCH // 10]
+LOSS_Y_RANGE_DEFAULT = [0, 3, 0.5]
 
 
 class BatchGradientDescent(Scene):
@@ -64,6 +77,25 @@ class BatchGradientDescent(Scene):
         info_group = VGroup(weight_matrix_group,
                             bias_matrix_group, epoch_info).center().to_edge(UP)
 
-    def get_weights_and_biases(self, x, y, epochs=1000, lr=0.01):
+        data_ax = Axes(
+            DATA_X_RANGE_DEFAULT,
+            DATA_Y_RANGE_DEFAULT,
+            AX_SIDE,
+            AX_SIDE,
+            axis_config=DEFAULT_AX_CONFIG
+        )
+
+        loss_ax = Axes(
+            LOSS_X_RANGE_DEFAULT,
+            LOSS_Y_RANGE_DEFAULT,
+            AX_SIDE,
+            AX_SIDE,
+            axis_config=DEFAULT_AX_CONFIG
+        ).next_to(data_ax, RIGHT, buff=1)
+
+        ax_group = VGroup(data_ax, loss_ax).scale(
+            AX_DEFAULT_SCALE_FACTOR).center().to_edge(DOWN)
+
+    def get_weights_and_biases(self, x, y, epochs=MAX_EPOCH, lr=LR_DEFAULT):
         op = self.op_class(lr)
         return op.fit_remembering_weights(x, y, epochs)
