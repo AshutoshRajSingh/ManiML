@@ -5,7 +5,7 @@ import sys
 import os
 sys.path.append(os.curdir)
 
-from optimizers.lro import BatchGradientDescentOptimizer
+from optimizers import lro
 
 
 def generate_dummy_linear_data(n=100, w=3, b=4):
@@ -41,7 +41,7 @@ LOSS_Y_RANGE_DEFAULT = [0, 40, 4]
 
 
 class BatchGradientDescent(Scene):
-    op_class = BatchGradientDescentOptimizer
+    op_class = lro.BatchGradientDescentOptimizer
 
     def construct(self):
         x, y = generate_dummy_linear_data()
@@ -196,3 +196,6 @@ class BatchGradientDescent(Scene):
         op = self.op_class(lr)
         self.op = op
         return op.fit_remembering_weights(x, y, epochs)
+
+class StochasticGradientDescent(BatchGradientDescent):
+    op_class = lro.StochasticGradientDescentOptimizer
