@@ -127,9 +127,6 @@ class BatchGradientDescent(Scene):
         )
         self.play(
             FadeIn(data_points, loss_plot),
-            run_time=0.5
-        )
-        self.play(
             Create(model_line),
             run_time=0.5
         )
