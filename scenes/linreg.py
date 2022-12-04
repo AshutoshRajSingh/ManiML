@@ -187,6 +187,17 @@ class BatchGradientDescent(Scene):
     def get_weights_and_biases(self, x, y):
         op = self.op_class(self.lr)
         return op.fit_remembering_weights(x, y, self.epoch_count)
+    
+    def loss_fn(self, x, y, weight_v, bias):
+        return util.mse_loss(x, y, weight_v, bias)
+    
+    def get_losses(self, x, y, weights, biases):
+        losses = []
+
+        for weight_v, bias in zip(weights, biases):
+            losses.append(self.loss_fn(x, y, weight_v, bias))
+        
+        return losses
 
 
 class StochasticGradientDescent(BatchGradientDescent):
