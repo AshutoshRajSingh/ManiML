@@ -15,7 +15,8 @@ class BatchGradientDescent(Scene):
     data_x_range = [-1, 1, 0.2]
     data_y_range = [-10, 10, 2]
 
-    loss_x_range = [0, epoch_count, epoch_count // 10]
+    loss_x_buff = 10
+    loss_x_range = [0, epoch_count + loss_x_buff, (epoch_count + loss_x_buff) // 10]
     loss_y_range = [0, 40, 4]
 
     ax_scale_factor = 0.5
@@ -37,11 +38,11 @@ class BatchGradientDescent(Scene):
 
     def construct(self):
         x, y = self.obtain_data()
+
         weights, biases = self.get_weights_and_biases(x, y)
+        losses, epochs = self.get_losses(x, y, weights, biases), list(range(1, self.epoch_count + 1))
 
-        losses, epochs = [0], [0]
-
-        first_weight, first_bias = weights[0], biases[0]
+        first_weight, first_bias, first_loss = weights[0], biases[0], losses[0]
 
         losses[0] = util.mse_loss(
             x, y, first_weight, first_bias)
@@ -115,8 +116,8 @@ class BatchGradientDescent(Scene):
             lambda x: x * first_weight[0, 0] + first_bias[0]).set_color(LIGHT_PINK)
 
         loss_plot = loss_ax.plot_line_graph(
-            epochs,
-            losses,
+            epochs[0:1],
+            losses[0:1],
             vertex_dot_radius=0.0,
             line_color=RED
         )
@@ -137,10 +138,6 @@ class BatchGradientDescent(Scene):
         self.wait()
 
         for (idx, (weight, bias)) in enumerate(zip(weights[1::], biases[1::])):
-            losses.append(
-                util.mse_loss(x, y, weight, bias))
-            epochs.append(idx + 1)
-
             self.play(
                 Transform(
                     weight_matrix,
@@ -171,8 +168,8 @@ class BatchGradientDescent(Scene):
                 Transform(
                     loss_plot,
                     loss_ax.plot_line_graph(
-                        epochs,
-                        losses,
+                        epochs[:idx+1],
+                        losses[:idx+1],
                         vertex_dot_radius=0.0,
                         line_color=RED
                     )
