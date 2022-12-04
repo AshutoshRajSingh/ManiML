@@ -7,7 +7,6 @@ sys.path.append(os.curdir)
 
 from optimizers import lro
 
-
 def generate_dummy_linear_data(n=100, w=3, b=4):
     x = np.random.rand(n, 1)
     y = b + w * x + np.random.rand(n, 1)
@@ -19,29 +18,32 @@ def mse_loss(x, y, weights, bias):
     return np.mean((x.dot(weights) + bias - y) ** 2)
 
 
-DEFAULT_DECIMAL_MATRIX_CONFIG = {
-    'bracket_h_buff': 0.5,
-    'element_to_mobject_config': {
-        'num_decimal_places': 3
-    }
-}
-
-DEFAULT_AX_CONFIG = {
-    'include_numbers': True
-}
-
-AX_DEFAULT_SCALE_FACTOR = 0.5
-MAX_EPOCH = 120 + 1
-LR_DEFAULT = 0.01
-AX_SIDE = 10
-DATA_X_RANGE_DEFAULT = [-1, 1, 0.2]
-DATA_Y_RANGE_DEFAULT = [-10, 10, 2]
-LOSS_X_RANGE_DEFAULT = [0, MAX_EPOCH, MAX_EPOCH // 10]
-LOSS_Y_RANGE_DEFAULT = [0, 40, 4]
-
-
 class BatchGradientDescent(Scene):
-    op_class = lro.BatchGradientDescentOptimizer
+    lr = 0.01
+    epoch_count = 120
+
+    data_x_range = [-1, 1, 0.2]
+    data_y_range = [-10, 10, 2]
+
+    loss_x_range = [0, epoch_count, epoch_count // 10]
+    loss_y_range = [0, 40, 4]
+
+    ax_scale_factor = 0.5
+    info_scale_factor = 1.0
+
+    decimal_matrix_config = {
+        'bracket_h_buff': 0.5,
+        'element_to_mobject_config': {
+            'num_decimal_places': 3
+        }
+    }
+
+    axes_config = {
+        'include_numbers': True
+    }
+    axes_physical_side = 10.0
+
+    op = lro.BatchGradientDescentOptimizer(lr)
 
     def construct(self):
         x, y = generate_dummy_linear_data()
@@ -56,7 +58,7 @@ class BatchGradientDescent(Scene):
 
         weight_matrix = DecimalMatrix(
             [first_weight],
-            **DEFAULT_DECIMAL_MATRIX_CONFIG
+            **self.decimal_matrix_config
         )
 
         weight_matrix_label = MathTex(
@@ -68,7 +70,7 @@ class BatchGradientDescent(Scene):
 
         bias_matrix = DecimalMatrix(
             [first_bias],
-            **DEFAULT_DECIMAL_MATRIX_CONFIG
+            **self.decimal_matrix_config
         )
 
         bias_matrix_label = MathTex(
@@ -91,26 +93,26 @@ class BatchGradientDescent(Scene):
             bias_matrix_group, RIGHT)
 
         info_group = VGroup(weight_matrix_group,
-                            bias_matrix_group, epoch_info).center().to_edge(UP)
+                            bias_matrix_group, epoch_info).scale(self.info_scale_factor).center().to_edge(UP)
 
         data_ax = Axes(
-            DATA_X_RANGE_DEFAULT,
-            DATA_Y_RANGE_DEFAULT,
-            AX_SIDE,
-            AX_SIDE,
-            axis_config=DEFAULT_AX_CONFIG
+            self.data_x_range,
+            self.data_y_range,
+            self.axes_physical_side,
+            self.axes_physical_side,
+            axis_config=self.axes_config
         )
 
         loss_ax = Axes(
-            LOSS_X_RANGE_DEFAULT,
-            LOSS_Y_RANGE_DEFAULT,
-            AX_SIDE,
-            AX_SIDE,
-            axis_config=DEFAULT_AX_CONFIG
+            self.loss_x_range,
+            self.loss_y_range,
+            self.axes_physical_side,
+            self.axes_physical_side,
+            axis_config=self.axes_config
         ).next_to(data_ax, RIGHT, buff=1)
 
         ax_group = VGroup(data_ax, loss_ax).scale(
-            AX_DEFAULT_SCALE_FACTOR).center().to_edge(DOWN)
+            self.ax_scale_factor).center().to_edge(DOWN)
 
         data_points = data_ax.plot_line_graph(
             x.ravel(), y.ravel(),
@@ -157,14 +159,14 @@ class BatchGradientDescent(Scene):
                     weight_matrix,
                     DecimalMatrix(
                         [weight],
-                        **DEFAULT_DECIMAL_MATRIX_CONFIG
+                        **self.decimal_matrix_config
                     ).move_to(weight_matrix)
                 ),
                 Transform(
                     bias_matrix,
                     DecimalMatrix(
                         [bias],
-                        **DEFAULT_DECIMAL_MATRIX_CONFIG
+                        **self.decimal_matrix_config
                     ).move_to(bias_matrix)
                 ),
                 Transform(
@@ -192,10 +194,10 @@ class BatchGradientDescent(Scene):
             )
         self.wait(5)
 
-    def get_weights_and_biases(self, x, y, epochs=MAX_EPOCH, lr=LR_DEFAULT):
-        op = self.op_class(lr)
-        self.op = op
-        return op.fit_remembering_weights(x, y, epochs)
+    def get_weights_and_biases(self, x, y):
+        return self.op.fit_remembering_weights(x, y, self.epoch_count)
+
 
 class StochasticGradientDescent(BatchGradientDescent):
-    op_class = lro.StochasticGradientDescentOptimizer
+    lr = 0.1
+    op = lro.StochasticGradientDescentOptimizer(lr)
