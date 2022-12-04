@@ -113,7 +113,7 @@ class BatchGradientDescent(Scene):
         )
 
         model_line = data_ax.plot(
-            lambda x: x * first_weight[0, 0] + first_bias[0]).set_color(LIGHT_PINK)
+            lambda x: self.model_curve_fn(x, first_weight, first_bias)).set_color(LIGHT_PINK)
 
         loss_plot = loss_ax.plot_line_graph(
             epochs[0:1],
@@ -162,7 +162,7 @@ class BatchGradientDescent(Scene):
                 Transform(
                     model_line,
                     data_ax.plot(
-                        lambda x: weight[0, 0] * x + bias[0]
+                        lambda x: self.model_curve_fn(x, weight, bias)
                     ).set_color(LIGHT_PINK)
                 ),
                 Transform(
@@ -177,6 +177,12 @@ class BatchGradientDescent(Scene):
                 run_time=0.1
             )
         self.wait(5)
+
+    def model_curve_fn(self, x, weight_v, bias):
+        weight_num = weight_v[0, 0]
+        bias_num = bias[0]
+
+        return x * weight_num + bias_num
     
     def obtain_data(self):
         return util.generate_dummy_linear_data()
