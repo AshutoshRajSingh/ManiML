@@ -73,7 +73,7 @@ class BatchGradientDescent(Scene):
             weight_matrix_group, RIGHT)
 
         epoch_counter = Integer(
-            0
+            1
         )
 
         epoch_label = Tex(
@@ -156,7 +156,7 @@ class BatchGradientDescent(Scene):
                 Transform(
                     epoch_counter,
                     Integer(
-                        idx + 1
+                        idx + 2
                     ).next_to(epoch_label, RIGHT)
                 ),
                 Transform(
