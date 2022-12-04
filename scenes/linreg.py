@@ -1,21 +1,11 @@
 from manim import *
-import numpy as np
 
 import sys
 import os
 sys.path.append(os.curdir)
 
 from optimizers import lro
-
-def generate_dummy_linear_data(n=100, w=3, b=4):
-    x = np.random.rand(n, 1)
-    y = b + w * x + np.random.rand(n, 1)
-
-    return x, y
-
-
-def mse_loss(x, y, weights, bias):
-    return np.mean((x.dot(weights) + bias - y) ** 2)
+import util
 
 
 class BatchGradientDescent(Scene):
@@ -43,21 +33,21 @@ class BatchGradientDescent(Scene):
     }
     axes_physical_side = 10.0
 
-    op = lro.BatchGradientDescentOptimizer(lr)
+    op_class = lro.BatchGradientDescentOptimizer
 
     def construct(self):
-        x, y = generate_dummy_linear_data()
+        x, y = self.obtain_data()
         weights, biases = self.get_weights_and_biases(x, y)
 
         losses, epochs = [0], [0]
 
         first_weight, first_bias = weights[0], biases[0]
 
-        losses[0] = mse_loss(
-            x, y, first_weight[:, np.newaxis], first_bias[:, np.newaxis])
+        losses[0] = util.mse_loss(
+            x, y, first_weight, first_bias)
 
         weight_matrix = DecimalMatrix(
-            [first_weight],
+            first_weight,
             **self.decimal_matrix_config
         )
 
@@ -122,7 +112,7 @@ class BatchGradientDescent(Scene):
         )
 
         model_line = data_ax.plot(
-            lambda x: x * first_weight[0] + first_bias[0]).set_color(LIGHT_PINK)
+            lambda x: x * first_weight[0, 0] + first_bias[0]).set_color(LIGHT_PINK)
 
         loss_plot = loss_ax.plot_line_graph(
             epochs,
@@ -151,14 +141,14 @@ class BatchGradientDescent(Scene):
 
         for (idx, (weight, bias)) in enumerate(zip(weights[1::], biases[1::])):
             losses.append(
-                mse_loss(x, y, weight[:, np.newaxis], bias[:, np.newaxis]))
+                util.mse_loss(x, y, weight, bias))
             epochs.append(idx + 1)
 
             self.play(
                 Transform(
                     weight_matrix,
                     DecimalMatrix(
-                        [weight],
+                        weight,
                         **self.decimal_matrix_config
                     ).move_to(weight_matrix)
                 ),
@@ -178,7 +168,7 @@ class BatchGradientDescent(Scene):
                 Transform(
                     model_line,
                     data_ax.plot(
-                        lambda x: weight[0] * x + bias[0]
+                        lambda x: weight[0, 0] * x + bias[0]
                     ).set_color(LIGHT_PINK)
                 ),
                 Transform(
@@ -193,11 +183,15 @@ class BatchGradientDescent(Scene):
                 run_time=0.1
             )
         self.wait(5)
+    
+    def obtain_data(self):
+        return util.generate_dummy_linear_data()
 
     def get_weights_and_biases(self, x, y):
-        return self.op.fit_remembering_weights(x, y, self.epoch_count)
+        op = self.op_class(self.lr)
+        return op.fit_remembering_weights(x, y, self.epoch_count)
 
 
 class StochasticGradientDescent(BatchGradientDescent):
     lr = 0.1
-    op = lro.StochasticGradientDescentOptimizer(lr)
+    op_class = lro.StochasticGradientDescentOptimizer
