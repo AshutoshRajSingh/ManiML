@@ -42,10 +42,7 @@ class BatchGradientDescent(Scene):
         weights, biases = self.get_weights_and_biases(x, y)
         losses, epochs = self.get_losses(x, y, weights, biases), list(range(1, self.epoch_count + 1))
 
-        first_weight, first_bias, first_loss = weights[0], biases[0], losses[0]
-
-        losses[0] = util.mse_loss(
-            x, y, first_weight, first_bias)
+        first_weight, first_bias = weights[0], biases[0]
 
         weight_matrix = DecimalMatrix(
             first_weight,
