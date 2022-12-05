@@ -69,3 +69,14 @@ class WBGradientDescentOptimizer(ABC):
             biases.append(deepcopy(self._bias))
 
         return weights, biases
+
+class SGDMixin(WBGradientDescentOptimizer):
+    def perform_training_step(self, x, y, epoch):
+        m, _ = x.shape
+
+        random_idx = np.random.randint(0, m)
+
+        x_random = x[random_idx][np.newaxis, :]
+        y_random = y[random_idx][np.newaxis, :]
+
+        super().perform_training_step(x_random, y_random, epoch)
