@@ -4,7 +4,7 @@ import sys
 import os
 sys.path.append(os.curdir)
 
-from optimizers import lro
+from optimizers import linregoptimizer
 import util
 
 
@@ -34,7 +34,7 @@ class BatchGradientDescent(Scene):
     }
     axes_physical_side = 10.0
 
-    op_class = lro.BatchGradientDescentOptimizer
+    op_class = linregoptimizer.BatchGradientDescentOptimizer
 
     def construct(self):
         x, y = self.obtain_data()
@@ -202,4 +202,4 @@ class BatchGradientDescent(Scene):
 
 class StochasticGradientDescent(BatchGradientDescent):
     lr = 0.1
-    op_class = lro.StochasticGradientDescentOptimizer
+    op_class = linregoptimizer.StochasticGradientDescentOptimizer
