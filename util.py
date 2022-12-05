@@ -33,4 +33,4 @@ def sigmoid(x):
     return 1 / (1 + np.exp(-x))
 
 def log_loss(x, y, weights, bias):
-    return -np.mean(y * np.log(sigmoid(x.dot(weights) + bias) + (1 - y) * np.log(sigmoid(1 - x.dot(weights) + bias))))
+    return -np.mean(y * np.log(sigmoid(x.dot(weights) + bias)) + (1 - y) * np.log(sigmoid(1 - x.dot(weights) + bias)))
