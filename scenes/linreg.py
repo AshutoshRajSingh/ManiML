@@ -102,12 +102,7 @@ class BatchGradientDescent(Scene):
         ax_group = VGroup(data_ax, loss_ax).scale(
             self.ax_scale_factor).center().to_edge(DOWN)
 
-        data_points = data_ax.plot_line_graph(
-            x.ravel(), y.ravel(),
-            line_color=None,
-            vertex_dot_radius=0.02,
-            vertex_dot_style={'color': YELLOW}
-        )
+        data_points = self.plot_data_points(data_ax, x, y)
 
         model_line = data_ax.plot(
             lambda x: self.model_curve_fn(x, first_weight, first_bias)).set_color(LIGHT_PINK)
@@ -124,7 +119,7 @@ class BatchGradientDescent(Scene):
             Create(loss_plot)
         )
         self.play(
-            FadeIn(data_points, loss_plot),
+            FadeIn(*data_points, loss_plot),
             Create(model_line),
             run_time=0.5
         )
@@ -198,6 +193,14 @@ class BatchGradientDescent(Scene):
             losses.append(self.loss_fn(x, y, weight_v, bias))
         
         return losses
+    
+    def plot_data_points(self, data_ax, x, y):
+        return [data_ax.plot_line_graph(
+            x.ravel(), y.ravel(),
+            line_color=None,
+            vertex_dot_radius=0.02,
+            vertex_dot_style={'color': YELLOW}
+        )]
 
 
 class StochasticGradientDescent(BatchGradientDescent):
