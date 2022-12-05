@@ -1,6 +1,6 @@
 import util
 import numpy as np
-from __baseoptimizer import WBGradientDescentOptimizer, SGDMixin
+from .__baseoptimizer import WBGradientDescentOptimizer, SGDMixin
 
 class BatchGradientDescentOptimizer(WBGradientDescentOptimizer):
     def __init__(self, lr=0.01) -> None:
