@@ -24,7 +24,12 @@ def obtain_classification_data():
     petals_x = petal_data[:, :-1]
     petals_y = petal_data[:, -1:]
 
-    return petals_x, petals_y
+    petals_x_means = np.mean(petals_x, axis=0)
+    petals_x_stds = np.std(petals_x, axis=0)
+
+    petals_x_norm = (petals_x - petals_x_means) / petals_x_stds
+
+    return petals_x_norm, petals_y
 
 def mse_loss(x, y, weights, bias):
     return np.mean((x.dot(weights) + bias - y) ** 2)
