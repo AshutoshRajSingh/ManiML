@@ -16,7 +16,6 @@ class BatchGradientDescent(Scene):
     data_y_range = [-10, 10, 2]
 
     loss_x_buff = 10
-    loss_x_range = [0, epoch_count + loss_x_buff, (epoch_count + loss_x_buff) // 10]
     loss_y_range = [0, 40, 4]
 
     ax_scale_factor = 0.5
@@ -92,7 +91,7 @@ class BatchGradientDescent(Scene):
         )
 
         loss_ax = Axes(
-            self.loss_x_range,
+            self.get_loss_x_range(),
             self.loss_y_range,
             self.axes_physical_side,
             self.axes_physical_side,
@@ -201,6 +200,9 @@ class BatchGradientDescent(Scene):
             vertex_dot_radius=0.02,
             vertex_dot_style={'color': YELLOW}
         )]
+    
+    def get_loss_x_range(self):
+        return [0, self.epoch_count + self.loss_x_buff, (self.epoch_count + self.loss_x_buff) // 10]
 
 
 class StochasticGradientDescent(BatchGradientDescent):
