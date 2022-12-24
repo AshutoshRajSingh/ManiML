@@ -7,7 +7,7 @@ def generate_dummy_linear_data(n=100, w=3, b=4):
 
     return x, y
 
-def obtain_classification_data():
+def obtain_classification_data(norm=False):
     iris = load_iris()
     petal_dims_setosa = iris.data[:, 2:4][iris.target == 0]
     petal_dims_virginica = iris.data[:, 2:4][iris.target == 2]
@@ -27,9 +27,10 @@ def obtain_classification_data():
     petals_x_means = np.mean(petals_x, axis=0)
     petals_x_stds = np.std(petals_x, axis=0)
 
-    petals_x_norm = (petals_x - petals_x_means) / petals_x_stds
+    if norm:
+        petals_x = (petals_x - petals_x_means) / petals_x_stds
 
-    return petals_x_norm, petals_y
+    return petals_x, petals_y
 
 def mse_loss(x, y, weights, bias):
     return np.mean((x.dot(weights) + bias - y) ** 2)
@@ -38,4 +39,4 @@ def sigmoid(x):
     return 1 / (1 + np.exp(-x))
 
 def log_loss(x, y, weights, bias):
-    return -np.mean(y * np.log(sigmoid(x.dot(weights) + bias)) + (1 - y) * np.log(sigmoid(1 - x.dot(weights) + bias)))
+    return -np.mean(y * np.log(sigmoid(x.dot(weights) + bias)) + (1 - y) * np.log(1 - sigmoid(x.dot(weights) + bias)))
