@@ -12,6 +12,8 @@ class BatchGradientDescent(Scene):
     lr = 0.01
     epoch_count = 120
 
+    epoch_animation_step = 1
+
     data_x_range = [-1, 1, 0.2]
     data_y_range = [-10, 10, 2]
 
@@ -128,7 +130,7 @@ class BatchGradientDescent(Scene):
         )
         self.wait()
 
-        for (idx, (weight, bias)) in enumerate(zip(weights[1::], biases[1::])):
+        for (idx, (weight, bias)) in enumerate(zip(weights[1::self.epoch_animation_step], biases[1::self.epoch_animation_step])):
             self.play(
                 Transform(
                     weight_matrix,
@@ -147,22 +149,22 @@ class BatchGradientDescent(Scene):
                 Transform(
                     epoch_counter,
                     Integer(
-                        idx + 2
+                        (idx + 1) * self.epoch_animation_step
                     ).next_to(epoch_label, RIGHT)
                 ),
                 Transform(
                     model_line,
                     data_ax.plot(
-                        lambda x: self.model_curve_fn(x, weight, bias)
+                        lambda x: self.model_curve_fn(x, weight, bias),
                     ).set_color(LIGHT_PINK)
                 ),
                 Transform(
                     loss_plot,
                     loss_ax.plot_line_graph(
-                        epochs[:idx+1],
-                        losses[:idx+1],
+                        epochs[:(idx + 1) * self.epoch_animation_step:self.epoch_animation_step],
+                        losses[:(idx + 1) * self.epoch_animation_step:self.epoch_animation_step],
                         vertex_dot_radius=0.0,
-                        line_color=RED
+                        line_color=RED,
                     )
                 ),
                 run_time=0.1
