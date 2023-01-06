@@ -37,7 +37,8 @@ class BatchGradientDescent(Scene):
         x, y = self.obtain_data()
 
         weights, biases = self.get_weights_and_biases(x, y)
-        losses, epochs = self.get_losses(x, y, weights, biases), list(range(1, self.epoch_count + 1))
+        losses, epochs = self.get_losses(x, y, weights, biases), list(
+            range(1, self.epoch_count + 1))
 
         first_weight, first_bias = weights[0], biases[0]
 
@@ -157,8 +158,10 @@ class BatchGradientDescent(Scene):
                 Transform(
                     loss_plot,
                     loss_ax.plot_line_graph(
-                        epochs[:(idx + 1) * self.epoch_animation_step:self.epoch_animation_step],
-                        losses[:(idx + 1) * self.epoch_animation_step:self.epoch_animation_step],
+                        epochs[:(
+                            idx + 1) * self.epoch_animation_step:self.epoch_animation_step],
+                        losses[:(
+                            idx + 1) * self.epoch_animation_step:self.epoch_animation_step],
                         vertex_dot_radius=0.0,
                         line_color=RED,
                     )
@@ -172,25 +175,25 @@ class BatchGradientDescent(Scene):
         bias_num = bias[0]
 
         return x * weight_num + bias_num
-    
+
     def obtain_data(self):
         return util.generate_dummy_linear_data()
 
     def get_weights_and_biases(self, x, y):
         op = self.op_class(self.lr)
         return op.fit_remembering_weights(x, y, self.epoch_count)
-    
+
     def loss_fn(self, x, y, weight_v, bias):
         return util.mse_loss(x, y, weight_v, bias)
-    
+
     def get_losses(self, x, y, weights, biases):
         losses = []
 
         for weight_v, bias in zip(weights, biases):
             losses.append(self.loss_fn(x, y, weight_v, bias))
-        
+
         return losses
-    
+
     def plot_data_points(self, data_ax, x, y):
         return [data_ax.plot_line_graph(
             x.ravel(), y.ravel(),
@@ -198,7 +201,7 @@ class BatchGradientDescent(Scene):
             vertex_dot_radius=0.02,
             vertex_dot_style={'color': YELLOW}
         )]
-    
+
     def get_loss_x_range(self):
         return [0, self.epoch_count + self.loss_x_buff, (self.epoch_count + self.loss_x_buff) // 10]
 

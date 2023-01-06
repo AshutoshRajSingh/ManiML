@@ -2,6 +2,7 @@ import util
 from scenes import linreg
 from optimizers import logregoptimizer
 
+
 class BatchGradientDescent(linreg.BatchGradientDescent):
     lr = 0.01
     op_class = logregoptimizer.BatchGradientDescentOptimizer
@@ -20,10 +21,10 @@ class BatchGradientDescent(linreg.BatchGradientDescent):
 
     def obtain_data(self):
         return util.obtain_classification_data()
-    
+
     def loss_fn(self, x, y, weight_v, bias):
         return util.log_loss(x, y, weight_v, bias)
-    
+
     def plot_data_points(self, data_ax, x, y):
         plot1 = data_ax.plot_line_graph(
             x[:, 0][y.ravel() == 0],
@@ -40,6 +41,7 @@ class BatchGradientDescent(linreg.BatchGradientDescent):
             vertex_dot_style={'color': '#58C4DD'}
         )
         return [plot1, plot2]
+
 
 class StochasticGradientDescent(BatchGradientDescent):
     lr = 0.01
