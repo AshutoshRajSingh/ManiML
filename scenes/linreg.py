@@ -1,9 +1,5 @@
 from manim import *
 
-import sys
-import os
-sys.path.append(os.curdir)
-
 from optimizers import linregoptimizer
 import util
 

@@ -1,6 +1,3 @@
-import sys, os
-sys.path.append(os.curdir)
-
 import util
 from scenes import linreg
 from optimizers import logregoptimizer
@@ -11,8 +8,12 @@ class BatchGradientDescent(linreg.BatchGradientDescent):
     data_y_range = [-4, 4, 1.5]
     data_x_range = [-7, 7, 2]
 
-    loss_y_range = [0, 1, 0.1]
-    epoch_count = 120
+    loss_y_range = [0, 2, 0.1]
+    epoch_count = 10000
+
+    axes_physical_side = 8
+
+    epoch_animation_step = 1000
 
     def model_curve_fn(self, x, weight_v, bias):
         return -(x * weight_v[0, 0] + bias[0]) / weight_v[1, 0]
@@ -24,7 +25,6 @@ class BatchGradientDescent(linreg.BatchGradientDescent):
         return util.log_loss(x, y, weight_v, bias)
     
     def plot_data_points(self, data_ax, x, y):
-        print(x.shape, y.shape)
         plot1 = data_ax.plot_line_graph(
             x[:, 0][y.ravel() == 0],
             x[:, 1][y.ravel() == 0],
