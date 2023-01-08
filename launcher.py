@@ -2,7 +2,7 @@ import util
 from manim import *
 from optimizers import linregoptimizer, logregoptimizer
 
-class LinregBatchGradientDescent:
+class LinregBatchGradientDescent(Scene):
     lr = 0.01
     epoch_count = 120
 
