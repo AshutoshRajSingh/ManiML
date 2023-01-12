@@ -2,11 +2,14 @@ import util
 from manim import *
 from optimizers import linregoptimizer, logregoptimizer
 
+
 class LinregBatchGradientDescent(Scene):
     lr = 0.01
     epoch_count = 120
 
-    epoch_animation_step = 1
+    epoch_animation_step = 10
+
+    model_curve_step = 100
 
     data_x_range = [-1, 1, 0.2]
     data_y_range = [-10, 10, 2]
@@ -100,8 +103,29 @@ class LinregBatchGradientDescent(Scene):
 
         data_points = self.plot_data_points(data_ax, x, y)
 
+        slope = self.model_curve_inverse_fn_slope(first_weight)
+
+        if slope > 0:
+            x_range = [
+                self.model_curve_inverse_fn(
+                    self.data_y_range[0], first_weight, first_bias),
+                self.model_curve_inverse_fn(
+                    self.data_y_range[1], first_weight, first_bias),
+                self.model_curve_step
+            ]
+        else:
+            x_range = [
+                self.model_curve_inverse_fn(
+                    self.data_y_range[1], first_weight, first_bias),
+                self.model_curve_inverse_fn(
+                    self.data_y_range[0], first_weight, first_bias),
+                self.model_curve_step
+            ]
+
         model_line = data_ax.plot(
-            lambda x: self.model_curve_fn(x, first_weight, first_bias)).set_color(LIGHT_PINK)
+            lambda x: self.model_curve_fn(x, first_weight, first_bias),
+            x_range=x_range
+        ).set_color(LIGHT_PINK)
 
         loss_plot = loss_ax.plot_line_graph(
             epochs[0:1],
@@ -126,6 +150,31 @@ class LinregBatchGradientDescent(Scene):
         self.wait()
 
         for (idx, (weight, bias)) in enumerate(zip(weights[1::self.epoch_animation_step], biases[1::self.epoch_animation_step])):
+            slope = self.model_curve_inverse_fn_slope(weight)
+
+            if slope > 0:
+                x_range = [
+                    self.model_curve_inverse_fn(
+                        self.data_y_range[0], weight, bias),
+                    self.model_curve_inverse_fn(
+                        self.data_y_range[1], weight, bias),
+                    self.model_curve_step
+                ]
+            else:
+                x_range = [
+                    self.model_curve_inverse_fn(
+                        self.data_y_range[1], weight, bias),
+                    self.model_curve_inverse_fn(
+                        self.data_y_range[0], weight, bias),
+                    self.model_curve_step
+                ]
+
+            if x_range[0] < self.data_x_range[0] or x_range[0] > self.data_x_range[1]:
+                x_range[0] = self.data_x_range[0]
+
+            if x_range[1] > self.data_x_range[1] or x_range[1] < self.data_x_range[0]:
+                x_range[1] = self.data_x_range[1]
+
             self.play(
                 Transform(
                     weight_matrix,
@@ -151,6 +200,7 @@ class LinregBatchGradientDescent(Scene):
                     model_line,
                     data_ax.plot(
                         lambda x: self.model_curve_fn(x, weight, bias),
+                        x_range=x_range
                     ).set_color(LIGHT_PINK)
                 ),
                 Transform(
@@ -173,6 +223,15 @@ class LinregBatchGradientDescent(Scene):
         bias_num = bias[0]
 
         return x * weight_num + bias_num
+
+    def model_curve_inverse_fn(self, y, weight_v, bias):
+        weight_num = weight_v[0, 0]
+        bias_num = bias[0]
+
+        return (y - bias_num) / weight_num
+
+    def model_curve_inverse_fn_slope(self, weight_v):
+        return 1 / weight_v[0, 0]
 
     def obtain_data(self):
         return util.generate_dummy_linear_data()
@@ -224,6 +283,12 @@ class LogregBatchGradientDescent(LinregBatchGradientDescent):
 
     def model_curve_fn(self, x, weight_v, bias):
         return -(x * weight_v[0, 0] + bias[0]) / weight_v[1, 0]
+
+    def model_curve_inverse_fn(self, y, weight_v, bias):
+        return -(bias[0] + y * weight_v[1, 0]) / weight_v[0, 0]
+
+    def model_curve_inverse_fn_slope(self, weight_v):
+        return -weight_v[1, 0] / weight_v[0, 0]
 
     def obtain_data(self):
         return util.obtain_classification_data()
