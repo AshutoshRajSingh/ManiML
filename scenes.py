@@ -5,9 +5,9 @@ from optimizers import linregoptimizer, logregoptimizer
 
 class LinregBatchGradientDescent(Scene):
     lr = 0.01
-    epoch_count = 120
+    epoch_count = 200
 
-    epoch_animation_step = 10
+    epoch_animation_step = 2
 
     model_curve_step = 100
 
@@ -121,6 +121,12 @@ class LinregBatchGradientDescent(Scene):
                     self.data_y_range[0], first_weight, first_bias),
                 self.model_curve_step
             ]
+
+        if x_range[0] < self.data_x_range[0] or x_range[0] > self.data_x_range[1]:
+            x_range[0] = self.data_x_range[0]
+
+        if x_range[1] > self.data_x_range[1] or x_range[1] < self.data_x_range[0]:
+            x_range[1] = self.data_x_range[1]
 
         model_line = data_ax.plot(
             lambda x: self.model_curve_fn(x, first_weight, first_bias),
@@ -279,7 +285,7 @@ class LogregBatchGradientDescent(LinregBatchGradientDescent):
 
     axes_physical_side = 8
 
-    epoch_animation_step = 1000
+    epoch_animation_step = 100
 
     def model_curve_fn(self, x, weight_v, bias):
         return -(x * weight_v[0, 0] + bias[0]) / weight_v[1, 0]
@@ -317,5 +323,5 @@ class LogregBatchGradientDescent(LinregBatchGradientDescent):
 class LogregStochasticGradientDescent(LogregBatchGradientDescent):
     lr = 0.01
     epoch_count = 2000
-    epoch_animation_step = 200
+    epoch_animation_step = 20
     op_class = logregoptimizer.StochasticGradientDescentOptimizer
