@@ -1,6 +1,6 @@
 import util
 from manim import *
-from optimizers import linregoptimizer, logregoptimizer
+from optimizers import linreg, logreg
 
 
 class LinregBatchGradientDescent(Scene):
@@ -33,7 +33,7 @@ class LinregBatchGradientDescent(Scene):
     }
     axes_physical_side = 10.0
 
-    op_class = linregoptimizer.BatchGradientDescentOptimizer
+    op_class = linreg.BatchGradientDescentOptimizer
 
     def construct(self):
         x, y = self.obtain_data()
@@ -272,12 +272,12 @@ class LinregBatchGradientDescent(Scene):
 
 class LinregStochasticGradientDescent(LinregBatchGradientDescent):
     lr = 0.1
-    op_class = linregoptimizer.StochasticGradientDescentOptimizer
+    op_class = linreg.StochasticGradientDescentOptimizer
 
 
 class LogregBatchGradientDescent(LinregBatchGradientDescent):
     lr = 0.01
-    op_class = logregoptimizer.BatchGradientDescentOptimizer
+    op_class = logreg.BatchGradientDescentOptimizer
     data_y_range = [-4, 4, 1.5]
     data_x_range = [-7, 7, 2]
 
@@ -326,4 +326,4 @@ class LogregStochasticGradientDescent(LogregBatchGradientDescent):
     lr = 0.01
     epoch_count = 2000
     epoch_animation_step = 20
-    op_class = logregoptimizer.StochasticGradientDescentOptimizer
+    op_class = logreg.StochasticGradientDescentOptimizer
