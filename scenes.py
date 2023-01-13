@@ -280,7 +280,7 @@ class LogregBatchGradientDescent(LinregBatchGradientDescent):
     data_y_range = [-4, 4, 1.5]
     data_x_range = [-7, 7, 2]
 
-    loss_y_range = [0, 2, 0.1]
+    loss_y_range = [0, 2, 0.25]
     epoch_count = 10000
 
     axes_physical_side = 8
