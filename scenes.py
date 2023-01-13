@@ -15,6 +15,7 @@ class LinregBatchGradientDescent(Scene):
     data_y_range = [-10, 10, 2]
 
     loss_x_buff = 10
+    loss_x_step = 10
     loss_y_range = [0, 40, 4]
 
     ax_scale_factor = 0.5
@@ -266,7 +267,7 @@ class LinregBatchGradientDescent(Scene):
         )]
 
     def get_loss_x_range(self):
-        return [0, self.epoch_count + self.loss_x_buff, (self.epoch_count + self.loss_x_buff) // 10]
+        return [0, self.epoch_count + self.loss_x_buff, (self.epoch_count + self.loss_x_buff) // self.loss_x_step]
 
 
 class LinregStochasticGradientDescent(LinregBatchGradientDescent):
@@ -281,6 +282,7 @@ class LogregBatchGradientDescent(LinregBatchGradientDescent):
     data_x_range = [-7, 7, 2]
 
     loss_y_range = [0, 2, 0.25]
+    loss_x_step = 5
     epoch_count = 10000
 
     axes_physical_side = 8
